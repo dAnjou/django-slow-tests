@@ -2,7 +2,10 @@ import time
 import operator
 
 from unittest import TestSuite
-from django.test.runner import DiscoverRunner
+try:
+    from django.test.runner import DiscoverRunner as BaseTestRunner
+except ImportError:
+    from django.test.simple import DjangoTestSuiteRunner as BaseTestRunner
 
 
 TIMINGS = {}
@@ -30,9 +33,9 @@ class TimingSuite(TestSuite):
         super(TimingSuite, self).addTest(test)
 
 
-class DiscoverSlowestTestsRunner(DiscoverRunner):
+class DiscoverSlowestTestsRunner(BaseTestRunner):
     """
-    Runner that extends Django's DiscoverRunner to time the tests.
+    Runner that extends Django's test runner to time the tests.
     """
 
     def build_suite(self, test_labels, extra_tests=None, **kwargs):
